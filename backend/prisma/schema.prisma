@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Quiz {
+  id        String   @id @default(uuid())
+  title     String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  questions Question[]
+
+  @@map("quizes")
+}
+
+model Question {
+  id     String @id @default(uuid())
+  quizId String @map("quiz_id")
+
+  quiz Quiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+
+  type    String
+  text    String
+  options String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("questions")
+}
