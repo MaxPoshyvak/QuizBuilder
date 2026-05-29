@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { QuizDTO } from '../types/dto.types';
-import { prisma } from '../../prisma.config';
+import { prisma } from '../config/prisma';
 
 export const getAllQuizzes = async (req: Request, res: Response) => {
     try {
