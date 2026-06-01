@@ -5,6 +5,19 @@ import { Button } from '@/components/ui/Button';
 import { useRouter } from 'next/navigation';
 import { Question, QuestionType } from '@/types';
 import QuestionCard from '@/components/shared/QuestionCard/QuestionCard';
+import z from 'zod';
+
+const createQuizSchema = z.object({
+    title: z.string().min(1),
+    questions: z.array(
+        z.object({
+            id: z.string(),
+            text: z.string().min(1),
+            type: z.enum(['INPUT', 'BOOLEAN', 'CHECKBOX']),
+            options: z.array(z.string()),
+        }),
+    ),
+});
 
 export default function CreateQuizPage() {
     const router = useRouter();
@@ -59,6 +72,13 @@ export default function CreateQuizPage() {
         e.preventDefault();
 
         const payload = { title, questions };
+
+        const result = createQuizSchema.safeParse(payload);
+        if (!result.success) {
+            alert(result.error.message);
+            return;
+        }
+
         console.log('Готово до відправки на бекенд:', payload);
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/quizzes`, {
